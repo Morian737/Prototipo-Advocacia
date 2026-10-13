@@ -136,7 +136,7 @@ header{
 }
 .hero-inner{
   position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;
-  align-items:center;padding:96px 0;
+  align-items:center;padding-block:96px;
 }
 .hero h1{color:#fff;font-size:2.9rem;margin-bottom:20px}
 .hero h1 em{color:var(--gold);font-style:normal}
@@ -183,29 +183,38 @@ header{
 .about-list li{display:flex;gap:12px;align-items:flex-start;font-size:.96rem}
 .about-list svg{width:20px;height:20px;stroke:var(--gold-dark);fill:none;stroke-width:2;flex:none;margin-top:4px}
 
-/* CAROUSEL */
+/* CAROUSEL (loop infinito) */
 .carousel{position:relative;margin-top:52px}
 .rail{
-  display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:10px 4px 28px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
+  position:relative;overflow:hidden;padding:10px 0 26px;cursor:grab;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);
 }
-.rail::-webkit-scrollbar{display:none}
-.rail > .slide{scroll-snap-align:start;flex:0 0 calc((100% - 48px)/3)}
+.rail.grabbing{cursor:grabbing}
+.rail-track{
+  display:flex;gap:24px;will-change:transform;
+  transition:transform .55s cubic-bezier(.22,.68,.26,1);
+}
+.rail-track .slide{flex:0 0 calc((100% - 48px)/3);min-width:0}
 .slide{min-width:0}
-.car-nav{display:flex;gap:12px;justify-content:center;margin-top:6px}
+.car-nav{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:8px}
 .car-btn{
   width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
   display:grid;place-items:center;cursor:pointer;transition:.25s;color:var(--navy);flex:none;
 }
 .car-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
 .car-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
-.car-btn:disabled{opacity:.35;cursor:default}
-.car-btn:disabled:hover{background:#fff;color:var(--navy);border-color:var(--line)}
 .sec-navy .car-btn{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22);color:#fff}
 .sec-navy .car-btn:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
-.sec-navy .car-btn:disabled:hover{background:rgba(255,255,255,.07);color:#fff;border-color:rgba(255,255,255,.22)}
-.rail-hint{text-align:center;font-size:.8rem;color:var(--muted);margin-top:12px}
+.car-dots{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.car-dot{
+  width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;
+  background:rgba(11,37,69,.22);transition:.3s;
+}
+.car-dot.active{background:var(--gold);width:24px;border-radius:5px}
+.sec-navy .car-dot{background:rgba(255,255,255,.3)}
+.sec-navy .car-dot.active{background:var(--gold)}
+.rail-hint{text-align:center;font-size:.8rem;color:var(--muted);margin-top:14px}
 .sec-navy .rail-hint{color:#8fa3bd}
 
 /* TEAM */
@@ -335,27 +344,29 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
   .hero-inner,.about-grid,.loc-grid,.contact-grid{grid-template-columns:1fr;gap:40px}
   .grid-4,.grid-steps{grid-template-columns:1fr 1fr}
   .grid-areas{grid-template-columns:1fr 1fr}
-  .rail > .slide{flex:0 0 calc((100% - 24px)/2)}
+  .rail-track .slide{flex:0 0 calc((100% - 24px)/2)}
   .step:not(:last-child)::after{display:none}
   .foot-grid{grid-template-columns:1fr 1fr}
-  .menu{position:fixed;top:76px;left:0;right:0;background:#fff;flex-direction:column;gap:0;padding:12px 24px;border-bottom:1px solid var(--line);transform:translateY(-140%);transition:.35s;box-shadow:var(--shadow)}
+  .menu{position:fixed;top:76px;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;gap:6px;padding:18px 22px 24px;border-bottom:1px solid var(--line);transform:translateY(-140%);transition:.35s;box-shadow:var(--shadow);max-height:calc(100vh - 76px);overflow-y:auto}
   .menu.open{transform:translateY(0)}
-  .menu a{padding:14px 0;width:100%;border-bottom:1px solid var(--line)}
+  .menu a{padding:15px 4px;width:100%;border-bottom:1px solid var(--line);font-size:.98rem}
+  .menu li:last-child a{border-bottom:none}
   .burger{display:flex}
   .nav-cta .btn{display:none}
 }
 @media(max-width:600px){
   section{padding:60px 0}
-  .wrap{padding:0 18px}
-  .hero-inner{padding:60px 0}
+  .wrap{padding:0 20px}
+  .hero-inner{padding-block:60px}
   .hero h1{font-size:2rem}
   .hero p{font-size:1rem}
   .hero-actions .btn{flex:1;justify-content:center}
   .trust{gap:26px;margin-top:34px}
   .trust b{font-size:1.6rem}
   .grid-4,.grid-areas,.grid-steps,.foot-grid{grid-template-columns:1fr}
-  .rail{padding:6px 2px 22px;gap:16px}
-  .rail > .slide{flex:0 0 86%}
+  .rail{padding:6px 0 20px}
+  .rail-track{gap:16px}
+  .rail-track .slide{flex:0 0 82%}
   .review-box{padding:30px 22px}
   .car-btn{width:44px;height:44px}
   .faq-q{font-size:.96rem;padding:20px}
@@ -483,9 +494,10 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
       <h2>Advogados que você pode conhecer</h2>
       <p class="lead">Todos os profissionais são identificados com nome completo e número de inscrição na OAB, conforme exige a legislação.</p>
     </div>
-    <div class="carousel">
+    <div class="carousel reveal">
       <div class="rail" id="rail-team">
-        <div class="slide reveal-l">
+        <div class="rail-track">
+        <div class="slide">
           <div class="member">
             <div class="member-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
             <div class="member-body">
@@ -495,7 +507,7 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
             </div>
           </div>
         </div>
-        <div class="slide reveal">
+        <div class="slide">
           <div class="member">
             <div class="member-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
             <div class="member-body">
@@ -505,7 +517,7 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
             </div>
           </div>
         </div>
-        <div class="slide reveal-r">
+        <div class="slide">
           <div class="member">
             <div class="member-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
             <div class="member-body">
@@ -515,7 +527,7 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
             </div>
           </div>
         </div>
-        <div class="slide reveal-r">
+        <div class="slide">
           <div class="member">
             <div class="member-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
             <div class="member-body">
@@ -524,6 +536,7 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
               <p>Advogado associado. Atuação em Direito Cível e Contratos.</p>
             </div>
           </div>
+        </div>
         </div>
       </div>
       <div class="car-nav">
@@ -534,7 +547,8 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
           <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       </div>
-      <p class="rail-hint">Arraste para o lado ou use as setas</p>
+      <div class="car-dots" data-rail="rail-team"></div>
+      <p class="rail-hint">Arraste para os lados ou use as setas &mdash; rolagem contínua</p>
     </div>
   </div>
 </section>
@@ -637,9 +651,10 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
       <p class="note">Avaliação espontânea de clientes na plataforma Google. Não utilizamos depoimentos como promessa de resultado, conforme o Provimento 205/2021 da OAB.</p>
     </div>
 
-    <div class="carousel">
+    <div class="carousel reveal">
       <div class="rail" id="rail-reviews">
-        <div class="slide reveal-l">
+        <div class="rail-track">
+        <div class="slide">
           <div class="review-card">
             <span class="quote-mark">&ldquo;</span>
             <p>Atendimento atencioso e explicações claras sobre cada etapa do processo.</p>
@@ -647,7 +662,7 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
             <span class="who"><b>Cliente</b> &middot; avaliação no Google</span>
           </div>
         </div>
-        <div class="slide reveal">
+        <div class="slide">
           <div class="review-card">
             <span class="quote-mark">&ldquo;</span>
             <p>Comunicação rápida e postura ética durante todo o acompanhamento.</p>
@@ -655,7 +670,7 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
             <span class="who"><b>Cliente</b> &middot; avaliação no Google</span>
           </div>
         </div>
-        <div class="slide reveal-r">
+        <div class="slide">
           <div class="review-card">
             <span class="quote-mark">&ldquo;</span>
             <p>Escritório organizado e profissional, com retorno dentro do prazo informado.</p>
@@ -663,13 +678,14 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
             <span class="who"><b>Cliente</b> &middot; avaliação no Google</span>
           </div>
         </div>
-        <div class="slide reveal-r">
+        <div class="slide">
           <div class="review-card">
             <span class="quote-mark">&ldquo;</span>
             <p>Orientação jurídica acessível e linguagem simples, sem termos difíceis.</p>
             <div class="rstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <span class="who"><b>Cliente</b> &middot; avaliação no Google</span>
           </div>
+        </div>
         </div>
       </div>
       <div class="car-nav">
@@ -680,7 +696,8 @@ footer .legal{margin-top:14px;font-size:.8rem;line-height:1.6}
           <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       </div>
-      <p class="rail-hint">Arraste para o lado ou use as setas</p>
+      <div class="car-dots" data-rail="rail-reviews"></div>
+      <p class="rail-hint">Arraste para os lados ou use as setas &mdash; rolagem contínua</p>
     </div>
   </div>
 </section>
@@ -897,30 +914,95 @@ if('IntersectionObserver' in window){
   revealEls.forEach(el=>el.classList.add('in'));
 }
 
-// Carrossel lateral (scroll snap + setas)
-document.querySelectorAll('.car-btn').forEach(btn=>{
-  const rail=document.getElementById(btn.dataset.rail);
-  if(!rail)return;
-  const step=()=>{
-    const slide=rail.querySelector('.slide');
-    if(!slide)return 320;
-    const gap=parseFloat(getComputedStyle(rail).gap)||24;
-    return slide.getBoundingClientRect().width+gap;
-  };
-  btn.addEventListener('click',()=>{
-    rail.scrollBy({left:step()*Number(btn.dataset.dir),behavior:'smooth'});
+// Carrossel lateral com loop infinito (setas + arraste)
+document.querySelectorAll('.carousel').forEach(car=>{
+  const rail=car.querySelector('.rail');
+  const track=car.querySelector('.rail-track');
+  if(!rail||!track)return;
+  const originals=Array.from(track.children);
+  const n=originals.length;
+  if(n<2)return;
+
+  // Clona o conjunto antes e depois para criar o loop invisível
+  originals.forEach(s=>{
+    const b=s.cloneNode(true); b.setAttribute('aria-hidden','true');
+    track.insertBefore(b,track.firstChild);
   });
-  const update=()=>{
-    const nav=btn.parentElement;
-    const prev=nav.querySelector('[data-dir="-1"]');
-    const next=nav.querySelector('[data-dir="1"]');
-    const max=rail.scrollWidth-rail.clientWidth-2;
-    if(prev)prev.disabled=rail.scrollLeft<=2;
-    if(next)next.disabled=rail.scrollLeft>=max;
+  originals.forEach(s=>{
+    const a=s.cloneNode(true); a.setAttribute('aria-hidden','true');
+    track.appendChild(a);
+  });
+
+  const gap=()=>parseFloat(getComputedStyle(track).gap)||24;
+  const dotsWrap=car.querySelector('.car-dots');
+  const dots=[];
+  const activeIndex=()=>((index%n)+n)%n;
+  const syncDots=()=>{const a=activeIndex();dots.forEach((d,i)=>d.classList.toggle('active',i===a));};
+
+  let step=0, index=n; // começa no primeiro card original
+  const setX=(animate)=>{
+    track.style.transition=animate?'':'none';
+    track.style.transform='translate3d('+(-index*step)+'px,0,0)';
   };
-  rail.addEventListener('scroll',update,{passive:true});
-  window.addEventListener('resize',update);
-  update();
+  const measure=()=>{step=track.children[0].getBoundingClientRect().width+gap();};
+  const wrap=()=>{ // reposiciona sem animação ao cruzar um conjunto inteiro
+    if(index>=2*n){while(index>=2*n)index-=n;setX(false);}
+    else if(index<n){while(index<n)index+=n;setX(false);}
+    syncDots();
+  };
+
+  // Indicadores
+  if(dotsWrap){
+    for(let i=0;i<n;i++){
+      const b=document.createElement('button');
+      b.type='button';b.className='car-dot';
+      b.setAttribute('aria-label','Ir para o item '+(i+1));
+      b.addEventListener('click',()=>{index=index-activeIndex()+i;setX(true);syncDots();});
+      dotsWrap.appendChild(b);dots.push(b);
+    }
+  }
+
+  measure(); setX(false); syncDots();
+  requestAnimationFrame(()=>{measure(); setX(false);});
+
+  // Setas
+  const nextBtn=car.querySelector('[data-dir="1"]');
+  const prevBtn=car.querySelector('[data-dir="-1"]');
+  if(nextBtn)nextBtn.addEventListener('click',()=>{index+=1;setX(true);});
+  if(prevBtn)prevBtn.addEventListener('click',()=>{index-=1;setX(true);});
+  track.addEventListener('transitionend',wrap);
+
+  // Arraste (toque e mouse)
+  let dragging=false,startX=0,startTx=0,startIndex=0,arrasted=false,pointerId=null;
+  const onDown=(x)=>{dragging=true;arrasted=false;startX=x;startTx=-index*step;startIndex=index;rail.classList.add('grabbing');track.style.transition='none';};
+  const onMove=(x)=>{
+    if(!dragging)return;
+    const dx=x-startX;
+    if(Math.abs(dx)>6)arrasted=true;
+    track.style.transform='translate3d('+(startTx+dx)+'px,0,0)';
+  };
+  const onUp=(x)=>{
+    if(!dragging)return;
+    dragging=false;rail.classList.remove('grabbing');
+    const dx=x-startX;
+    let steps=arrasted?Math.round(-dx/step):0;
+    index=Math.max(0,Math.min(3*n-1,startIndex+steps));
+    setX(true);
+  };
+
+  rail.addEventListener('touchstart',e=>onDown(e.touches[0].clientX),{passive:true});
+  rail.addEventListener('touchmove',e=>onMove(e.touches[0].clientX),{passive:true});
+  rail.addEventListener('touchend',e=>onUp(e.changedTouches[0].clientX));
+  rail.addEventListener('touchcancel',e=>onUp(e.changedTouches[0].clientX));
+  rail.addEventListener('mousedown',e=>{e.preventDefault();onDown(e.clientX);});
+  window.addEventListener('mousemove',e=>{if(dragging)onMove(e.clientX);});
+  window.addEventListener('mouseup',e=>{if(dragging)onUp(e.clientX);});
+
+  let rt;
+  window.addEventListener('resize',()=>{
+    clearTimeout(rt);
+    rt=setTimeout(()=>{measure();track.style.transition='none';setX(false);},150);
+  });
 });
 
 // FAQ accordion
